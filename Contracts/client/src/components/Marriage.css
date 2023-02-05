@@ -1,0 +1,75 @@
+.marriage-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: blueviolet;
+    padding: 10px;
+    /* width: 80%; */
+    border-radius: 10px;
+}
+
+.form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.label{
+    padding: 5px;
+    color:beige;
+}
+.inputs{
+    background-color: aliceblue;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    padding: 5px;
+}
+.btn{
+    margin-top: 10px;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: cadetblue;
+    color: aliceblue;
+    cursor: pointer;
+    box-shadow: 1px 2px 8px 2px rgb(78, 78, 78);
+}
+.txt{
+    color:rgb(244, 5, 5);
+    text-align: center;
+    margin: 5px;
+}
+.spouses{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+.sps{
+    margin: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.divorce-btn{
+    margin: 5px;
+    border:none;
+    padding: 10px;
+    background-color: indianred;
+    color: aliceblue;
+    border-radius: 5px;
+    box-shadow: 1px 2px 8px 2px rgb(78, 78, 78);
+    cursor: pointer;
+}
+
+.after-sign{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}

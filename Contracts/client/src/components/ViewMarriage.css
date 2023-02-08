@@ -1,0 +1,45 @@
+.viewmarriage-container{
+    /* width: 100%; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #243b67;
+    padding: 10px;
+    /* width: 80%; */
+    border-radius: 10px;
+    margin: 5px;
+}
+.txt{
+    color: forestgreen;
+}
+.note{
+    margin: 10px 70px;
+    text-align: center;
+    color: indianred;
+}
+.form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.label {
+    padding: 5px;
+    color: beige;
+}
+
+.inputz {
+    background-color: aliceblue;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    padding: 5px;
+}
+.view-contract{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}

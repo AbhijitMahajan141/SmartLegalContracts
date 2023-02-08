@@ -7,6 +7,9 @@ import "./App.css";
 import Marriage from "./components/Marriage";
 import { ShopRental } from "./components/ShopRental";
 import Patent from "./components/Patent";
+import ViewMarriage from "./components/ViewMarriage";
+import ViewPatent from "./components/ViewPatent";
+import ViewShopRental from "./components/ViewShopRental";
 
 function App() {
   const [isMetamaskInstalled, setIsMetamaskInstalled] = useState(false);
@@ -14,6 +17,7 @@ function App() {
   const [marriageId, setMarriageId] = useState(0);
   const [patentId, setPatentId] = useState(0);
   const [shopRentalId, setShopRentalId] = useState(0);
+  const [active, setActive] = useState("Create");
 
   // const [spouseData, setSpouseData] = useState([]);
   //this a object
@@ -103,32 +107,91 @@ function App() {
   // console.log(state);
   return (
     <div className="App">
-      Making Legal Contracts Smart using Blockchain!!!
       {isMetamaskInstalled ? (
         account ? (
-          <span className="connected-txt">
-            Connected to Metamask with Address:<b>{account}</b>
-          </span>
+          <div className="cont">
+            <div className="menu">
+              <div style={{ width: "1%", cursor: "pointer" }}>
+                <h3 className="logo">SmartLegalContracts</h3>
+              </div>
+              <div className="menu-btn-cont">
+                <button
+                  className="menu-btn"
+                  onClick={() => {
+                    setActive("Create");
+                  }}
+                >
+                  Create Contract
+                </button>
+                <button
+                  className="menu-btn"
+                  onClick={() => {
+                    setActive("View");
+                  }}
+                >
+                  View Contract
+                </button>
+              </div>
+              <div>
+                <button
+                  className="menu-btn"
+                  onClick={() => {
+                    setActive("About");
+                  }}
+                >
+                  About
+                </button>
+              </div>
+            </div>
+            <span className="connected-txt">
+              Connected to Metamask with Address:<b>{account}</b>
+            </span>
+          </div>
         ) : (
-          <button className="connect-btn" onClick={connectWallet}>
-            connectWallet
-          </button>
+          <div className="connect-cont">
+            Making Legal Contracts Smart using Blockchain!!!
+            <button className="connect-btn" onClick={connectWallet}>
+              connectWallet
+            </button>
+          </div>
         )
       ) : (
         "Please Install Metamask!"
       )}
       {account ? (
-        <div style={{ width: "60%" }}>
-          <div style={{ marginBottom: "5px" }}>
-            <Marriage state={state} id={marriageId} />
-          </div>
-          <div style={{ marginBottom: "5px" }}>
-            <Patent state={state} id={patentId} />
-          </div>
-          <div style={{ marginBottom: "5px" }}>
-            <ShopRental state={state} id={shopRentalId} />
-          </div>
-        </div>
+        <>
+          {active === "Create" && (
+            <div className="contracts">
+              <div>
+                <Marriage state={state} id={marriageId} />
+              </div>
+              <div>
+                <Patent state={state} id={patentId} />
+              </div>
+              <div>
+                <ShopRental state={state} id={shopRentalId} />
+              </div>
+            </div>
+          )}
+          {active === "View" && (
+            <div className="contracts">
+              <div>
+                <ViewMarriage state={state} />
+              </div>
+              <div>
+                <ViewPatent state={state} />
+              </div>
+              <div>
+                <ViewShopRental state={state} />
+              </div>
+            </div>
+          )}
+          {active === "About" && (
+            <div>
+              <h1>The About Section of the Application goes here!!!</h1>
+            </div>
+          )}
+        </>
       ) : (
         ""
       )}

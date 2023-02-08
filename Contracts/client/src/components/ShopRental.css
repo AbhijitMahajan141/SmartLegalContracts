@@ -1,12 +1,14 @@
 .ShopRental-container{
+    /* width: 100%; */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: blueviolet;
+    background-color: #243b67;
     padding: 10px;
     /* width: 80%; */
     border-radius: 10px;
+    margin: 5px;
 }
 .form {
     display: flex;
@@ -33,7 +35,7 @@
     border: none;
     padding: 10px;
     border-radius: 5px;
-    background-color: cadetblue;
+    background-color: #0ef6ccad;
     color: aliceblue;
     cursor: pointer;
     box-shadow: 1px 2px 8px 2px rgb(78, 78, 78);

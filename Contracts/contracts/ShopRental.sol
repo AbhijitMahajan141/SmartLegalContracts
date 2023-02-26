@@ -21,6 +21,7 @@ contract ShopRental {
         string shopAddress;
         uint256 term;
         uint256 rent;
+        uint256 rentduedate;
         uint256 timestamp;
         State state;
     }
@@ -51,6 +52,15 @@ contract ShopRental {
     mapping(uint256 => LandlordInfo) public landlord_info;
     mapping(uint256 => LesseeInfo) public lessee_info;
 
+    struct PaidRent {
+        // uint256 agreement_id;
+        uint256 id;
+        uint256 time;
+        uint256 value;
+    }
+
+    mapping(uint256 => PaidRent) public paidrents;
+
     event token(uint256 id);
 
     modifier onlyLandlord(uint256 _index) {
@@ -74,7 +84,8 @@ contract ShopRental {
         address payable _lessee,
         uint256 _rent,
         string memory _shopAddress,
-        uint256 _term
+        uint256 _term,
+        uint256 _rentduedate
     ) public {
         require(msg.sender != address(0));
         require(
@@ -97,6 +108,7 @@ contract ShopRental {
             _shopAddress,
             _term,
             _rent,
+            _rentduedate,
             block.timestamp,
             State.Created
         );
@@ -171,7 +183,10 @@ contract ShopRental {
                 msg.sender == agreement_info[_index].lessee_address,
             "one of u is a fraud!"
         );
-        require(msg.sender == agreement_info[_index].landlord_address);
+        require(
+            msg.sender == agreement_info[_index].landlord_address,
+            "Only landlord can Terminate contract!"
+        );
         agreement_info[_index].state = State.Terminated;
     }
 
@@ -192,6 +207,26 @@ contract ShopRental {
         } else {
             return false;
         }
+    }
+
+    function payRent(uint256 _id) public payable {
+        require(landlord_info[_id].signed == true, "Sign the Contract first!");
+        require(
+            msg.value == agreement_info[_id].rent,
+            "The input amount is not the decided rent amount!"
+        );
+        require(
+            msg.sender == agreement_info[_id].lessee_address,
+            "Only lessee can pay rent!"
+        );
+        // landlord.transfer(_rent);
+        (bool sent, ) = landlord.call{value: msg.value}("");
+        require(sent, "Failed to send rent");
+        paidrents[_id] = PaidRent(
+            paidrents[_id].id + 1,
+            block.timestamp,
+            msg.value
+        );
     }
 }
 

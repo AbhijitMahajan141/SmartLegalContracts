@@ -9,6 +9,7 @@ const ViewShopRental = ({ state }) => {
   const [shopAddress, setShopAddress] = useState("");
   const [term, setTerm] = useState();
   const [rent, setRent] = useState();
+  const [rentduedate, setRentDueDate] = useState();
   const [timestamp, setTimestamp] = useState();
   const [landlordAadhar, setLandlordAadhar] = useState();
   const [landlordName, setLandlordName] = useState("");
@@ -18,6 +19,9 @@ const ViewShopRental = ({ state }) => {
   const [lesseeName, setLesseeName] = useState("");
   const [leFathersName, setLeFathersName] = useState("");
   const [lesseeAddress, setLesseeAddress] = useState("");
+  const [rentId, setRentId] = useState();
+  const [rentDate, setRentDate] = useState();
+  const [rentAmount, setRentAmount] = useState();
 
   const getContract = async (e) => {
     e.preventDefault();
@@ -26,33 +30,71 @@ const ViewShopRental = ({ state }) => {
       const agreement = await state.shopRental_contract.agreement_info(token);
       const landlord = await state.shopRental_contract.landlord_info(token);
       const lessee = await state.shopRental_contract.lessee_info(token);
+      const rent = await state.shopRental_contract.paidrents(token);
 
       // console.log(token, agreement, landlord, lessee);
+      if (
+        ethers.BigNumber.from(agreement.agreement_id).toNumber() !== 0 &&
+        landlord.name !== "" &&
+        lessee.name !== ""
+      ) {
+        setContractId(ethers.BigNumber.from(agreement.agreement_id).toNumber());
+        setLandlord(agreement.landlord_address);
+        setLessee(agreement.lessee_address);
+        setShopAddress(agreement.shopAddress);
+        setTerm(ethers.BigNumber.from(agreement.term).toNumber());
+        setRent(ethers.BigNumber.from(agreement.rent).toNumber());
+        setRentDueDate(ethers.BigNumber.from(agreement.rentduedate).toNumber());
+        setTimestamp(ethers.BigNumber.from(agreement.timestamp).toNumber());
+        setLandlordAadhar(ethers.BigNumber.from(landlord.aadhar).toNumber());
+        setLandlordName(landlord.name);
+        setLFathersName(landlord.fathers_name);
+        setLandlordAddress(landlord.addr);
+        setLesseeAadhar(ethers.BigNumber.from(lessee.aadhar).toNumber());
+        setLesseeName(lessee.name);
+        setLeFathersName(lessee.fathers_name);
+        setLesseeAddress(lessee.addr);
 
-      setContractId(ethers.BigNumber.from(agreement.agreement_id).toNumber());
-      setLandlord(agreement.landlord_address);
-      setLessee(agreement.lessee_address);
-      setShopAddress(agreement.shopAddress);
-      setTerm(ethers.BigNumber.from(agreement.term).toNumber());
-      setRent(ethers.BigNumber.from(agreement.rent).toNumber());
-      setTimestamp(ethers.BigNumber.from(agreement.timestamp).toNumber());
-      setLandlordAadhar(ethers.BigNumber.from(landlord.aadhar).toNumber());
-      setLandlordName(landlord.name);
-      setLFathersName(landlord.fathers_name);
-      setLandlordAddress(landlord.addr);
-      setLesseeAadhar(ethers.BigNumber.from(lessee.aadhar).toNumber());
-      setLesseeName(lessee.name);
-      setLeFathersName(lessee.fathers_name);
-      setLesseeAddress(lessee.addr);
+        setRentId(ethers.BigNumber.from(rent.id).toNumber());
+        setRentDate(ethers.BigNumber.from(rent.time).toNumber());
+        setRentAmount(ethers.BigNumber.from(rent.value).toNumber());
+        // paidrent();
+      } else {
+        alert("The Contract token does not exist!");
+      }
     } catch (error) {
       alert(error.message);
     }
   };
 
+  const payRent = async (e) => {
+    e.preventDefault();
+    const value = { value: rent };
+    const transact = await state.shopRental_contract.payRent(contractId, value);
+    // console.log(value);
+
+    await transact.wait();
+    const rentt = await state.shopRental_contract.paidrents(contractId);
+    setRentId(ethers.BigNumber.from(rentt.id).toNumber());
+    setRentDate(ethers.BigNumber.from(rentt.time).toNumber());
+    setRentAmount(ethers.BigNumber.from(rentt.value).toNumber());
+    // paidrent();
+  };
+
+  // const paidrent = async (e) => {
+  //   e.preventDefault();
+  //   const rent = await state.shopRental_contract.paidrents(contractId);
+  //   setRentId(ethers.BigNumber.from(rent.id).toNumber());
+  //   setRentDate(ethers.BigNumber.from(rent.time).toNumber());
+  //   setRentAmount(ethers.BigNumber.from(rent.value).toNumber());
+  // };
+
+  let dateobj = new Date(timestamp * 1000).toLocaleString();
+
   return (
     <div className="viewShopRental-container">
       <h1 style={{ color: "whitesmoke" }}>Your ShopRental Contract</h1>
-      {!contractId && !landlord && !lessee ? (
+      {!contractId && !landlordAadhar && !lesseeAadhar ? (
         <div>
           <form className="form" onSubmit={getContract}>
             <label htmlFor="index" className="label">
@@ -77,7 +119,7 @@ const ViewShopRental = ({ state }) => {
               style={{ color: "whitesmoke", margin: "5px 70px" }}
             >
               This Shop Rental Agreement is made and entered into on{" "}
-              <b>{timestamp}</b> by and between <b>{landlordName}</b>, Son of{" "}
+              <b>{dateobj}</b> by and between <b>{landlordName}</b>, Son of{" "}
               <b>{lFathersName}</b>, whose address is <b>{landlordAddress}</b>,
               and <b>{lesseeName}</b>, Son of <b>{leFathersName}</b>, whose
               address is <b>{lesseeAddress}</b>.
@@ -100,7 +142,8 @@ const ViewShopRental = ({ state }) => {
                 <li>
                   RENT - The Lessee shall pay a monthly rent of Rs.{" "}
                   <b>{rent}</b>, with the first month's rent paid in advance.
-                  Payment of rent shall be made on or before the Date.
+                  Payment of rent shall be made on or before the{" "}
+                  <b>{rentduedate}</b> of every Month.
                 </li>
                 <li>
                   DEPOSIT - The Lessee shall also pay a security deposit of Rs.
@@ -108,9 +151,9 @@ const ViewShopRental = ({ state }) => {
                   termination of this Agreement. An itemized list of deductions
                   will be provided by the Lessor upon refund of the security
                   deposit. The Lessee shall forfeit in claiming the security
-                  deposit if the Lessee fails to claim it within {term} month's
-                  after the security deposit return period or if the Lessee
-                  breaches the terms of the Agreement.
+                  deposit if the Lessee fails to claim it within <b>{term}</b>{" "}
+                  month's after the security deposit return period or if the
+                  Lessee breaches the terms of the Agreement.
                 </li>
                 <li>
                   PAYMENT OPTION - The Parties agree that payment of rent,
@@ -161,6 +204,20 @@ const ViewShopRental = ({ state }) => {
                   mentioned.
                 </li>
               </ol>
+              <div>
+                {/* <h3>Pay Rent</h3> */}
+                <button className="btn" onClick={payRent}>
+                  Pay Rent
+                </button>
+              </div>
+              {rentId > 0 && (
+                <div>
+                  <h3>Total rent's paid {rentId}</h3>
+                  Last Paid Rent on Date -{" "}
+                  {new Date(rentDate * 1000).toLocaleString()} and Amount -{" "}
+                  {rentAmount}.
+                </div>
+              )}
             </div>
           </div>
         </>

@@ -17,7 +17,9 @@ function App() {
   const [marriageId, setMarriageId] = useState(0);
   const [patentId, setPatentId] = useState(0);
   const [shopRentalId, setShopRentalId] = useState(0);
-  const [active, setActive] = useState("Create");
+  // const [active, setActive] = useState("Create");
+  const [whichContract, setWhichContract] = useState("Marriage");
+  const [viewwhichContract, setViewWhichContract] = useState("Marriage");
 
   // const [spouseData, setSpouseData] = useState([]);
   //this a object
@@ -40,13 +42,13 @@ function App() {
   //useEffect(() => {
   const connectWallet = async () => {
     const marriage_contract_address =
-      "0x4acc78Ed2459107c69Fb4006B9625943D35805Cf";
+      "0x6566B01BBAb5C05B60f6555fa32091f2cE1AFB1A";
     const m_abi = marriage_abi.abi;
     const shopRental_contract_address =
-      "0x6290d22A195Da1832e8bd210b6512b9c1d4146af";
+      "0x562d73a8AAc246Ad71963dE000A1CeA3Bd611bC7";
     const sr_abi = shopRental_abi.abi;
     const patent_contract_address =
-      "0x0BD4F34e8A6A792154617eF389627E550CE26F2f";
+      "0x5Fcc682BB64F51e44314A701877d506Cf4B4aF12";
     const p_abi = patent_abi.abi;
 
     try {
@@ -109,45 +111,37 @@ function App() {
     <div className="App">
       {isMetamaskInstalled ? (
         account ? (
-          <div className="cont">
-            <div className="menu">
-              <div style={{ width: "1%", cursor: "pointer" }}>
-                <h3 className="logo">SmartLegalContracts</h3>
-              </div>
-              <div className="menu-btn-cont">
-                <button
-                  className="menu-btn"
-                  onClick={() => {
-                    setActive("Create");
-                  }}
-                >
-                  Create Contract
-                </button>
-                <button
-                  className="menu-btn"
-                  onClick={() => {
-                    setActive("View");
-                  }}
-                >
-                  View Contract
-                </button>
-              </div>
-              <div>
-                <button
-                  className="menu-btn"
-                  onClick={() => {
-                    setActive("About");
-                  }}
-                >
-                  About
-                </button>
-              </div>
+          // <div className="cont">
+          <div className="menu">
+            <div style={{ width: "1%", cursor: "pointer" }}>
+              <span>
+                <b className="logo">SML</b>
+                <br />
+                SmartLegalContracts
+              </span>
             </div>
-            <span className="connected-txt">
-              Connected to Metamask with Address:<b>{account}</b>
-            </span>
+            <div className="menu-btn-cont">
+              <a className="menu-btn" href="#home">
+                Home
+              </a>
+              <a className="menu-btn" href="#create">
+                Create Contract
+              </a>
+              <a className="menu-btn" href="#view">
+                View Contract
+              </a>
+            </div>
+            <div>
+              <a className="menu-btn" href="#about">
+                About
+              </a>
+            </div>
           </div>
         ) : (
+          // {/* <span className="connected-txt">
+          //   Connected to Metamask with Address:<b>{account}</b>
+          // </span> */}
+          // {/* </div> */}
           <div className="connect-cont">
             Making Legal Contracts Smart using Blockchain!!!
             <button className="connect-btn" onClick={connectWallet}>
@@ -158,39 +152,129 @@ function App() {
       ) : (
         "Please Install Metamask!"
       )}
+
       {account ? (
         <>
-          {active === "Create" && (
+          {/* Home Page */}
+          {/* <div className="home-cont" id="home"> */}
+          <div className="home" id="home">
+            <h1>SmartLegalContracts</h1>
+            <p>
+              Create Smart Contracts with the Security and Immutability of
+              Blockchain Technology!
+            </p>
+            <a className="menu-btn" href="#create">
+              Get Started
+            </a>
+          </div>
+          {/* </div> */}
+
+          {/* Create contract */}
+          <div className="create" id="create">
+            <div className="create-sec">
+              <h1>Create New Contract</h1>
+              <div>
+                <button
+                  className="contract-btn"
+                  onClick={() => {
+                    setWhichContract("Marriage");
+                  }}
+                >
+                  Marriage
+                </button>
+                <button
+                  className="contract-btn"
+                  onClick={() => {
+                    setWhichContract("Patent");
+                  }}
+                >
+                  Patent
+                </button>
+                <button
+                  className="contract-btn"
+                  onClick={() => {
+                    setWhichContract("ShopRental");
+                  }}
+                >
+                  ShopRental
+                </button>
+              </div>
+            </div>
+
             <div className="contracts">
+              {whichContract === "Marriage" && (
+                <div>
+                  <Marriage state={state} id={marriageId} />
+                </div>
+              )}
+              {whichContract === "Patent" && (
+                <div>
+                  <Patent state={state} id={patentId} />
+                </div>
+              )}
+              {whichContract === "ShopRental" && (
+                <div>
+                  <ShopRental state={state} id={shopRentalId} />
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* View Contract */}
+          <div className="view" id="view">
+            <div className="view-sec">
+              <h1>View your Contract</h1>
               <div>
-                <Marriage state={state} id={marriageId} />
-              </div>
-              <div>
-                <Patent state={state} id={patentId} />
-              </div>
-              <div>
-                <ShopRental state={state} id={shopRentalId} />
+                <button
+                  className="contract-btn"
+                  onClick={() => {
+                    setViewWhichContract("Marriage");
+                  }}
+                >
+                  Marriage
+                </button>
+                <button
+                  className="contract-btn"
+                  onClick={() => {
+                    setViewWhichContract("Patent");
+                  }}
+                >
+                  Patent
+                </button>
+                <button
+                  className="contract-btn"
+                  onClick={() => {
+                    setViewWhichContract("ShopRental");
+                  }}
+                >
+                  ShopRental
+                </button>
               </div>
             </div>
-          )}
-          {active === "View" && (
+
             <div className="contracts">
-              <div>
-                <ViewMarriage state={state} />
-              </div>
-              <div>
-                <ViewPatent state={state} />
-              </div>
-              <div>
-                <ViewShopRental state={state} />
-              </div>
+              {viewwhichContract === "Marriage" && (
+                <div>
+                  <ViewMarriage state={state} />
+                </div>
+              )}
+              {viewwhichContract === "Patent" && (
+                <div>
+                  <ViewPatent state={state} />
+                </div>
+              )}
+              {viewwhichContract === "ShopRental" && (
+                <div>
+                  <ViewShopRental state={state} />
+                </div>
+              )}
             </div>
-          )}
-          {active === "About" && (
-            <div>
-              <h1>The About Section of the Application goes here!!!</h1>
-            </div>
-          )}
+          </div>
+
+          {/* About */}
+          <div className="about" id="about">
+            <h1>The About Section of the Application goes here!!!</h1>
+          </div>
         </>
       ) : (
         ""
@@ -200,3 +284,7 @@ function App() {
 }
 
 export default App;
+
+// const marriage_contract_address = "0x4acc78Ed2459107c69Fb4006B9625943D35805Cf";
+// const patent_contract_address = "0x0BD4F34e8A6A792154617eF389627E550CE26F2f";
+// const shopRental_contract_address ="0x6290d22A195Da1832e8bd210b6512b9c1d4146af";

@@ -1,5 +1,7 @@
 import "./ShopRental.css";
 import React, { useState, useEffect } from "react";
+import { ethers } from "ethers";
+
 export const ShopRental = ({ state, id }) => {
   const [landlord, setLandlord] = useState();
   const [lessee, setLessee] = useState();
@@ -12,13 +14,15 @@ export const ShopRental = ({ state, id }) => {
     const _rent = document.querySelector("#rent").value;
     const _shopAddress = document.querySelector("#shopAddress").value;
     const _term = document.querySelector("#term").value;
+    const _rentduedate = document.querySelector("#rentduedate").value;
 
     const transaction = await state.shopRental_contract.setAgreement(
       _landlord,
       _lessee,
-      _rent,
+      ethers.utils.parseUnits(_rent, 18),
       _shopAddress,
-      _term
+      _term,
+      _rentduedate
     );
     await transaction.wait();
     setLandlord(_landlord);
@@ -97,6 +101,10 @@ export const ShopRental = ({ state, id }) => {
             Enter Term:
           </label>
           <input type="number" className="inputs" id="term" />
+          <label htmlFor="rentduedate" className="label">
+            Enter Rent Due Date:
+          </label>
+          <input type="number" className="inputs" id="rentduedate" />
           <button type="submit" className="btn">
             Submit
           </button>

@@ -1,12 +1,12 @@
 .viewmarriage-container{
-    /* width: 100%; */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    /* position:sticky; */
     background-color: #243b67;
     padding: 10px;
-    /* width: 80%; */
+    /* width: 50%; */
     border-radius: 10px;
     margin: 5px;
 }

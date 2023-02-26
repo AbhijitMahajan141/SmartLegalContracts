@@ -11,7 +11,11 @@ const Marriage = ({ state, id }) => {
 
   const setSpouses = async (e) => {
     e.preventDefault();
+    // try {
 
+    // } catch (error) {
+    //   alert(error.message);
+    // }
     const husband_addr = document.querySelector("#husband").value;
     const wife_addr = document.querySelector("#wife").value;
 

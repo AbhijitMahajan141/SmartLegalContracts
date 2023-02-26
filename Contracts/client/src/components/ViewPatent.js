@@ -27,22 +27,34 @@ const ViewPatent = ({ state }) => {
       const licensee = await state.patent_contract.licensee_info(token);
 
       // console.log(agreement, licensor, licensee);
-      setContractId(ethers.BigNumber.from(agreement.agreement_id).toNumber());
-      setLicensor(agreement.licensor);
-      setLicensee(agreement.licensee);
-      setPatentNumber(agreement.patent_number);
-      setAmount(ethers.BigNumber.from(agreement.amount).toNumber());
-      setStatee(agreement.state);
-      setCreatedTimestamp(
-        ethers.BigNumber.from(agreement.createdTimestamp).toNumber()
-      );
+      if (
+        ethers.BigNumber.from(agreement.agreement_id).toNumber() !== 0 &&
+        licensor._name !== "" &&
+        licensee._name !== ""
+      ) {
+        setContractId(ethers.BigNumber.from(agreement.agreement_id).toNumber());
+        setLicensor(agreement.licensor);
+        setLicensee(agreement.licensee);
+        setPatentNumber(agreement.patent_number);
+        setAmount(ethers.BigNumber.from(agreement.amount).toNumber());
+        setStatee(agreement.state);
+        setCreatedTimestamp(
+          ethers.BigNumber.from(agreement.createdTimestamp).toNumber()
+        );
 
-      setLicensorName(licensor._name);
-      setLicenseeName(licensee._name);
-      setLicensorAddress(licensor._addr);
-      setLicenseeAddress(licensee._addr);
-      setLicensorAadhar(ethers.BigNumber.from(licensor._aadhar_no).toNumber());
-      setLicenseeAadhar(ethers.BigNumber.from(licensee._aadhar_no).toNumber());
+        setLicensorName(licensor._name);
+        setLicenseeName(licensee._name);
+        setLicensorAddress(licensor._addr);
+        setLicenseeAddress(licensee._addr);
+        setLicensorAadhar(
+          ethers.BigNumber.from(licensor._aadhar_no).toNumber()
+        );
+        setLicenseeAadhar(
+          ethers.BigNumber.from(licensee._aadhar_no).toNumber()
+        );
+      } else {
+        alert("The Contract Token does not Exist!");
+      }
     } catch (error) {
       alert(error.message);
     }
@@ -51,7 +63,7 @@ const ViewPatent = ({ state }) => {
   return (
     <div className="viewPatent-container">
       <h1 style={{ color: "whitesmoke" }}>Your Patent Contract</h1>
-      {!contractId && !licensor && !licensee ? (
+      {!contractId && !licensorName && !licenseeName ? (
         <div>
           <form className="form" onSubmit={getContract}>
             <label htmlFor="index" className="label">
@@ -74,12 +86,12 @@ const ViewPatent = ({ state }) => {
               style={{ color: "whitesmoke", margin: "5px 70px" }}
             >
               The Agreement is hearby entered into on this date{" "}
-              <b>{createdTimestamp}</b> between Mr/Mrs. <b>{licensorName}</b>{" "}
-              with Aadhar ID <b>{licensorAadhar}</b> and Mr/Mrs.{" "}
-              <b>{licenseeName}</b> with Aadhar ID {licenseeAadhar} for the
-              purpose of transfering the ownership of Patent{" "}
-              <b>{patentNumber}</b> from Mr/Mrs. {licensorName} to Mr/Mrs.{" "}
-              {licenseeName}.
+              <b>{new Date(createdTimestamp * 1000).toLocaleString()}</b>{" "}
+              between Mr/Mrs. <b>{licensorName}</b> with Aadhar ID{" "}
+              <b>{licensorAadhar}</b> and Mr/Mrs. <b>{licenseeName}</b> with
+              Aadhar ID {licenseeAadhar} for the purpose of transfering the
+              ownership of Patent <b>{patentNumber}</b> from Mr/Mrs.{" "}
+              {licensorName} to Mr/Mrs. {licenseeName}.
             </p>
             <span className="txt">Licensor: {licensor}</span>
             <span className="txt">Address of Licensor: {licensorAddress}</span>

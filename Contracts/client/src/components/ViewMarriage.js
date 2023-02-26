@@ -29,21 +29,29 @@ const ViewMarriage = ({ state }) => {
       const wife = await state.marriage_contract.wife_info(token);
       const divo = await state.marriage_contract.getDivorced(token);
 
-      setContractId(ethers.BigNumber.from(agreement.agreement_id).toNumber());
-      setHusband(agreement.husband);
-      setWife(agreement.wife);
-      setTimestamp(ethers.BigNumber.from(agreement.timestamp).toNumber());
-      setHusbandName(husband.name);
-      setWifeName(wife.name);
-      setHusbandDob(husband.dob);
-      setWifeDob(wife.dob);
-      setHusbandOccupation(husband.occupation);
-      setWifeOccupation(wife.occupation);
-      // setHusbandAddress(husband.addr);
-      // setwifeAddress(wife.addr);
-      setHusbandAadhar(ethers.BigNumber.from(husband.aadhar).toNumber());
-      setwifeAadhar(ethers.BigNumber.from(wife.aadhar).toNumber());
-      setDivorced(divo);
+      if (
+        ethers.BigNumber.from(agreement.agreement_id).toNumber() !== 0 &&
+        husband.name !== "" &&
+        wife.name !== ""
+      ) {
+        setContractId(ethers.BigNumber.from(agreement.agreement_id).toNumber());
+        setHusband(agreement.husband);
+        setWife(agreement.wife);
+        setTimestamp(ethers.BigNumber.from(agreement.timestamp).toNumber());
+        setHusbandName(husband.name);
+        setWifeName(wife.name);
+        setHusbandDob(husband.dob);
+        setWifeDob(wife.dob);
+        setHusbandOccupation(husband.occupation);
+        setWifeOccupation(wife.occupation);
+        // setHusbandAddress(husband.addr);
+        // setwifeAddress(wife.addr);
+        setHusbandAadhar(ethers.BigNumber.from(husband.aadhar).toNumber());
+        setwifeAadhar(ethers.BigNumber.from(wife.aadhar).toNumber());
+        setDivorced(divo);
+      } else {
+        alert("The Contract token does not exist!");
+      }
     } catch (error) {
       alert(error.message);
     }
@@ -101,13 +109,14 @@ const ViewMarriage = ({ state }) => {
                 style={{ color: "whitesmoke", margin: "10px 70px" }}
               >
                 The Marriage Contract has been formed between Mr.{" "}
-                <b>{husbandName}</b> with ID <b>{husbandAadhar}</b> and DOB{" "}
-                <b>{husbandDob}</b> with Occupation as{" "}
-                <b>{husbandOccupation}</b> and Mrs. <b>{wifeName}</b> with ID{" "}
-                <b>{wifeAadhar}</b> and DOB <b>{wifeDob}</b> with Occupation as{" "}
-                <b>{wifeOccupation}</b> at time <b>{timestamp}</b>. Both the
-                parties have Signed the Contract and the information is stored
-                on Blockchain.
+                <b>{husbandName}</b> with Aadhar ID <b>{husbandAadhar}</b> and
+                DOB <b>{husbandDob}</b> with Occupation as{" "}
+                <b>{husbandOccupation}</b> and Mrs. <b>{wifeName}</b> with
+                Aadhar ID <b>{wifeAadhar}</b> and DOB <b>{wifeDob}</b> with
+                Occupation as <b>{wifeOccupation}</b> on{" "}
+                <b>{new Date(timestamp * 1000).toLocaleString()}</b>. Both the
+                parties have Signed the Contract and the information is securely
+                stored on Blockchain.
               </p>
               <span className="note">
                 Note: To Issue a divorce both the spouses have to click the

@@ -6,61 +6,87 @@ export const ShopRental = ({ state, id }) => {
   const [landlord, setLandlord] = useState();
   const [lessee, setLessee] = useState();
   const [signed, setSigned] = useState(false);
+  const [landlordSign, setLandlordSign] = useState(false);
+  const [lesseeSign, setLesseeSign] = useState(false);
 
   const setAgreement = async (e) => {
     e.preventDefault();
-    const _landlord = document.querySelector("#landlord").value;
-    const _lessee = document.querySelector("#lessee").value;
-    const _rent = document.querySelector("#rent").value;
-    const _shopAddress = document.querySelector("#shopAddress").value;
-    const _term = document.querySelector("#term").value;
-    const _rentduedate = document.querySelector("#rentduedate").value;
+    try {
+      const _landlord = document.querySelector("#landlord").value;
+      const _lessee = document.querySelector("#lessee").value;
+      const _rent = document.querySelector("#rent").value;
+      const _shopAddress = document.querySelector("#shopAddress").value;
+      const _term = document.querySelector("#term").value;
+      const _rentduedate = document.querySelector("#rentduedate").value;
 
-    const transaction = await state.shopRental_contract.setAgreement(
-      _landlord,
-      _lessee,
-      ethers.utils.parseUnits(_rent, 18),
-      _shopAddress,
-      _term,
-      _rentduedate
-    );
-    await transaction.wait();
-    setLandlord(_landlord);
-    setLessee(_lessee);
+      const transaction = await state.shopRental_contract.setAgreement(
+        _landlord,
+        _lessee,
+        ethers.utils.parseUnits(_rent, 18),
+        _shopAddress,
+        _term,
+        _rentduedate
+      );
+      await transaction.wait();
+      setLandlord(_landlord);
+      setLessee(_lessee);
+    } catch (error) {
+      alert(error.error.message);
+    }
   };
 
   const signLandlord = async (e) => {
     e.preventDefault();
-    const ld_aadr = document.querySelector("#ld_aadhar").value;
-    const ld_name = document.querySelector("#ld_name").value;
-    const ld_fname = document.querySelector("#ld_father").value;
-    const ld_addr = document.querySelector("#ld_addr").value;
-    const transact = await state.shopRental_contract.signLandlord(
-      id,
-      ld_aadr,
-      ld_name,
-      ld_fname,
-      ld_addr
-    );
-    await transact.wait();
-    isSigned();
+    try {
+      const ld_aadr = document.querySelector("#ld_aadhar").value;
+      const ld_name = document.querySelector("#ld_name").value;
+      const ld_fname = document.querySelector("#ld_father").value;
+      const ld_addr = document.querySelector("#ld_addr").value;
+      const transact = await state.shopRental_contract.signLandlord(
+        id,
+        ld_aadr,
+        ld_name,
+        ld_fname,
+        ld_addr
+      );
+      await transact.wait();
+
+      const landlord = await state.shopRental_contract.landlord_info(id);
+      if (landlord.signed === true) {
+        setLandlordSign(landlord.signed);
+      }
+
+      isSigned();
+    } catch (error) {
+      alert(error.error.message);
+    }
   };
 
   const signLessee = async (e) => {
     e.preventDefault();
-    const le_aadr = document.querySelector("#le_aadhar").value;
-    const le_name = document.querySelector("#le_name").value;
-    const le_fname = document.querySelector("#le_father").value;
-    const le_addr = document.querySelector("#le_address").value;
-    const transact = await state.shopRental_contract.signLessee(
-      id,
-      le_aadr,
-      le_name,
-      le_fname,
-      le_addr
-    );
-    await transact.wait();
-    isSigned();
+    try {
+      const le_aadr = document.querySelector("#le_aadhar").value;
+      const le_name = document.querySelector("#le_name").value;
+      const le_fname = document.querySelector("#le_father").value;
+      const le_addr = document.querySelector("#le_address").value;
+      const transact = await state.shopRental_contract.signLessee(
+        id,
+        le_aadr,
+        le_name,
+        le_fname,
+        le_addr
+      );
+      await transact.wait();
+
+      const lessee = await state.shopRental_contract.lessee_info(id);
+      if (lessee.signed === true) {
+        setLesseeSign(lessee.signed);
+      }
+
+      isSigned();
+    } catch (error) {
+      alert(error.error.message);
+    }
   };
 
   const isSigned = async () => {
@@ -124,51 +150,67 @@ export const ShopRental = ({ state, id }) => {
               <div className="shop-data">
                 <div className="sps">
                   Landlord Information
-                  <form onSubmit={signLandlord} className="form">
-                    <label htmlFor="aadhar" className="label">
-                      Enter Landlord Aadhar_No:
-                    </label>
-                    <input type="number" className="inputs" id="ld_aadhar" />
-                    <label htmlFor="name" className="label">
-                      Enter Landlord Name:
-                    </label>
-                    <input type="text" className="inputs" id="ld_name" />
-                    <label htmlFor="fathers_name" className="label">
-                      Enter Landlord father's Name:
-                    </label>
-                    <input type="text" className="inputs" id="ld_father" />
-                    <label htmlFor="address" className="label">
-                      Enter Landlord Address:
-                    </label>
-                    <input type="text" className="inputs" id="ld_addr" />
-                    <button type="submit" className="btn">
-                      Submit
-                    </button>
-                  </form>
+                  {!landlordSign === true ? (
+                    <form onSubmit={signLandlord} className="form">
+                      <label htmlFor="aadhar" className="label">
+                        Enter Landlord Aadhar_No:
+                      </label>
+                      <input type="number" className="inputs" id="ld_aadhar" />
+                      <label htmlFor="name" className="label">
+                        Enter Landlord Name:
+                      </label>
+                      <input type="text" className="inputs" id="ld_name" />
+                      <label htmlFor="fathers_name" className="label">
+                        Enter Landlord father's Name:
+                      </label>
+                      <input type="text" className="inputs" id="ld_father" />
+                      <label htmlFor="address" className="label">
+                        Enter Landlord Address:
+                      </label>
+                      <input type="text" className="inputs" id="ld_addr" />
+                      <button type="submit" className="btn">
+                        Submit
+                      </button>
+                    </form>
+                  ) : (
+                    <div>
+                      <span className="txt">
+                        Landlord has signed the contract!
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <div className="sps">
                   Lessee Information
-                  <form onSubmit={signLessee} className="form">
-                    <label htmlFor="aadhar" className="label">
-                      Enter Lessee Aadhar_No:
-                    </label>
-                    <input type="number" className="inputs" id="le_aadhar" />
-                    <label htmlFor="name" className="label">
-                      Enter Lessee Name:
-                    </label>
-                    <input type="text" className="inputs" id="le_name" />
-                    <label htmlFor="fathers_name" className="label">
-                      Enter Lessee father's Name:
-                    </label>
-                    <input type="text" className="inputs" id="le_father" />
-                    <label htmlFor="address" className="label">
-                      Enter Lessee Address:
-                    </label>
-                    <input type="text" className="inputs" id="le_address" />
-                    <button type="submit" className="btn">
-                      Submit
-                    </button>
-                  </form>
+                  {!lesseeSign === true ? (
+                    <form onSubmit={signLessee} className="form">
+                      <label htmlFor="aadhar" className="label">
+                        Enter Lessee Aadhar_No:
+                      </label>
+                      <input type="number" className="inputs" id="le_aadhar" />
+                      <label htmlFor="name" className="label">
+                        Enter Lessee Name:
+                      </label>
+                      <input type="text" className="inputs" id="le_name" />
+                      <label htmlFor="fathers_name" className="label">
+                        Enter Lessee father's Name:
+                      </label>
+                      <input type="text" className="inputs" id="le_father" />
+                      <label htmlFor="address" className="label">
+                        Enter Lessee Address:
+                      </label>
+                      <input type="text" className="inputs" id="le_address" />
+                      <button type="submit" className="btn">
+                        Submit
+                      </button>
+                    </form>
+                  ) : (
+                    <div>
+                      <span className="txt">
+                        Lessee has signed the contract!
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
             </>

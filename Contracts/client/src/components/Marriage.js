@@ -8,75 +8,100 @@ const Marriage = ({ state, id }) => {
   // const [token, setToken] = useState();
   const [signed, setSigned] = useState(false);
   const [divorced, setDivorced] = useState(false);
+  const [husbandSign, setHusbandSign] = useState(false);
+  const [wifeSign, setWifeSign] = useState(false);
 
   const setSpouses = async (e) => {
     e.preventDefault();
-    // try {
+    try {
+      const husband_addr = document.querySelector("#husband").value;
+      const wife_addr = document.querySelector("#wife").value;
 
-    // } catch (error) {
-    //   alert(error.message);
-    // }
-    const husband_addr = document.querySelector("#husband").value;
-    const wife_addr = document.querySelector("#wife").value;
+      const transaction = await state.marriage_contract.setSpouse(
+        husband_addr,
+        wife_addr
+      );
+      await transaction.wait();
+      // console.log(ethers.BigNumber.from(transaction.value).toNumber());
+      // console.log(state.marriage_contract._runningEvents[0]);
+      // const husband = await state.marriage_contract.husbandAddress();
+      // const wife = await state.marriage_contract.wifeAddress();
+      // console.log(husband);
+      setHusband(husband_addr);
+      setWife(wife_addr);
 
-    const transaction = await state.marriage_contract.setSpouse(
-      husband_addr,
-      wife_addr
-    );
-    await transaction.wait();
-    // console.log(ethers.BigNumber.from(transaction.value).toNumber());
-    // console.log(state.marriage_contract._runningEvents[0]);
-    // const husband = await state.marriage_contract.husbandAddress();
-    // const wife = await state.marriage_contract.wifeAddress();
-    // console.log(husband);
-    setHusband(husband_addr);
-    setWife(wife_addr);
-
-    // setToken(id);
-    // console.log("token from marriage:", id);
+      // setToken(id);
+      // console.log("token from marriage:", id);
+    } catch (error) {
+      alert(error.error.message);
+    }
   };
+
   const signHusband = async (e) => {
     e.preventDefault();
     // const index = token;
-    const Haadhar = document.querySelector("#h_aadhar").value;
-    const Hname = document.querySelector("#h_name").value;
-    const Hdob = document.querySelector("#h_dob").value;
-    const Hoccup = document.querySelector("#h_occupation").value;
-    const Haddr = document.querySelector("#h_address").value;
+    try {
+      const Haadhar = document.querySelector("#h_aadhar").value;
+      const Hname = document.querySelector("#h_name").value;
+      const Hdob = document.querySelector("#h_dob").value;
+      const Hoccup = document.querySelector("#h_occupation").value;
+      const Haddr = document.querySelector("#h_address").value;
 
-    const transact = await state.marriage_contract.signHusband(
-      id,
-      Haadhar,
-      Hname,
-      Hdob,
-      Hoccup,
-      Haddr
-    );
-    await transact.wait();
-    isSigned();
-    // console.log(id);
-    isDivorced();
+      const transact = await state.marriage_contract.signHusband(
+        id,
+        Haadhar,
+        Hname,
+        Hdob,
+        Hoccup,
+        Haddr
+      );
+      await transact.wait();
+
+      const husband = await state.marriage_contract.husband_info(id);
+
+      if (husband.signed === true) {
+        setHusbandSign(husband.signed);
+      }
+
+      isSigned();
+      // console.log(id);
+      isDivorced();
+    } catch (error) {
+      alert(error.error.message);
+    }
   };
+
   const signWife = async (e) => {
     e.preventDefault();
-    const Waadhar = document.querySelector("#w_aadhar").value;
-    const Wname = document.querySelector("#w_name").value;
-    const Wdob = document.querySelector("#w_dob").value;
-    const Woccup = document.querySelector("#w_occupation").value;
-    const Waddr = document.querySelector("#w_address").value;
+    try {
+      const Waadhar = document.querySelector("#w_aadhar").value;
+      const Wname = document.querySelector("#w_name").value;
+      const Wdob = document.querySelector("#w_dob").value;
+      const Woccup = document.querySelector("#w_occupation").value;
+      const Waddr = document.querySelector("#w_address").value;
 
-    const transact = await state.marriage_contract.signWife(
-      id,
-      Waadhar,
-      Wname,
-      Wdob,
-      Woccup,
-      Waddr
-    );
-    await transact.wait();
-    isSigned();
-    // console.log(id);
-    isDivorced();
+      const transact = await state.marriage_contract.signWife(
+        id,
+        Waadhar,
+        Wname,
+        Wdob,
+        Woccup,
+        Waddr
+      );
+      await transact.wait();
+
+      const wife = await state.marriage_contract.wife_info(id);
+
+      if (wife.signed === true) {
+        setWifeSign(wife.signed);
+      }
+
+      isSigned();
+      // console.log(id);
+      isDivorced();
+    } catch (error) {
+      alert(error.error.message);
+    }
   };
 
   const isSigned = async () => {
@@ -87,9 +112,13 @@ const Marriage = ({ state, id }) => {
   };
 
   const divorce = async () => {
-    const transact = await state.marriage_contract.issueDivorce(id);
-    await transact.wait();
-    isDivorced();
+    try {
+      const transact = await state.marriage_contract.issueDivorce(id);
+      await transact.wait();
+      isDivorced();
+    } catch (error) {
+      alert(error.error.message);
+    }
   };
 
   const isDivorced = async () => {
@@ -139,59 +168,73 @@ const Marriage = ({ state, id }) => {
               <div className="spouses">
                 <div className="sps">
                   Husband Information
-                  <form onSubmit={signHusband} className="form">
-                    <label htmlFor="aadhar" className="label">
-                      Enter Husband Aadhar_No:
-                    </label>
-                    <input type="number" className="inputs" id="h_aadhar" />
-                    <label htmlFor="name" className="label">
-                      Enter Husband Name:
-                    </label>
-                    <input type="text" className="inputs" id="h_name" />
-                    <label htmlFor="dob" className="label">
-                      Enter Husband Date of Birth:
-                    </label>
-                    <input type="text" className="inputs" id="h_dob" />
-                    <label htmlFor="occupation" className="label">
-                      Enter Husband Occupation:
-                    </label>
-                    <input type="text" className="inputs" id="h_occupation" />
-                    <label htmlFor="address" className="label">
-                      Enter Husband Address:
-                    </label>
-                    <input type="text" className="inputs" id="h_address" />
-                    <button type="submit" className="btn">
-                      Submit
-                    </button>
-                  </form>
+                  {!husbandSign === true ? (
+                    <form onSubmit={signHusband} className="form">
+                      <label htmlFor="aadhar" className="label">
+                        Enter Husband Aadhar_No:
+                      </label>
+                      <input type="number" className="inputs" id="h_aadhar" />
+                      <label htmlFor="name" className="label">
+                        Enter Husband Name:
+                      </label>
+                      <input type="text" className="inputs" id="h_name" />
+                      <label htmlFor="dob" className="label">
+                        Enter Husband Date of Birth:
+                      </label>
+                      <input type="text" className="inputs" id="h_dob" />
+                      <label htmlFor="occupation" className="label">
+                        Enter Husband Occupation:
+                      </label>
+                      <input type="text" className="inputs" id="h_occupation" />
+                      <label htmlFor="address" className="label">
+                        Enter Husband Address:
+                      </label>
+                      <input type="text" className="inputs" id="h_address" />
+                      <button type="submit" className="btn">
+                        Submit
+                      </button>
+                    </form>
+                  ) : (
+                    <div>
+                      <span className="txt">
+                        Husband has signed the Contract!
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <div className="sps">
                   Wife Information
-                  <form onSubmit={signWife} className="form">
-                    <label htmlFor="aadhar" className="label">
-                      Enter Wife Aadhar_No:
-                    </label>
-                    <input type="number" className="inputs" id="w_aadhar" />
-                    <label htmlFor="name" className="label">
-                      Enter Wife Name:
-                    </label>
-                    <input type="text" className="inputs" id="w_name" />
-                    <label htmlFor="dob" className="label">
-                      Enter Wife Date of Birth:
-                    </label>
-                    <input type="text" className="inputs" id="w_dob" />
-                    <label htmlFor="occupation" className="label">
-                      Enter Wife Occupation:
-                    </label>
-                    <input type="text" className="inputs" id="w_occupation" />
-                    <label htmlFor="address" className="label">
-                      Enter Wife Address:
-                    </label>
-                    <input type="text" className="inputs" id="w_address" />
-                    <button type="submit" className="btn">
-                      Submit
-                    </button>
-                  </form>
+                  {!wifeSign === true ? (
+                    <form onSubmit={signWife} className="form">
+                      <label htmlFor="aadhar" className="label">
+                        Enter Wife Aadhar_No:
+                      </label>
+                      <input type="number" className="inputs" id="w_aadhar" />
+                      <label htmlFor="name" className="label">
+                        Enter Wife Name:
+                      </label>
+                      <input type="text" className="inputs" id="w_name" />
+                      <label htmlFor="dob" className="label">
+                        Enter Wife Date of Birth:
+                      </label>
+                      <input type="text" className="inputs" id="w_dob" />
+                      <label htmlFor="occupation" className="label">
+                        Enter Wife Occupation:
+                      </label>
+                      <input type="text" className="inputs" id="w_occupation" />
+                      <label htmlFor="address" className="label">
+                        Enter Wife Address:
+                      </label>
+                      <input type="text" className="inputs" id="w_address" />
+                      <button type="submit" className="btn">
+                        Submit
+                      </button>
+                    </form>
+                  ) : (
+                    <div>
+                      <span className="txt">Wife has signed the Contract!</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </>

@@ -7,59 +7,84 @@ const Patent = ({ state, id }) => {
   const [licensee, setLicensee] = useState();
   const [signed, setSigned] = useState(false);
   const [amount, setAmount] = useState();
+  const [licensorSign, setLicensorSign] = useState(false);
+  const [licenseeSign, setLicenseeSign] = useState(false);
 
   const setParam = async (e) => {
     e.preventDefault();
-    const _licensor = document.querySelector("#licensor").value;
-    const _licensee = document.querySelector("#licensee").value;
-    const _patent_no = document.querySelector("#patent_no").value;
-    const _amount = document.querySelector("#amount").value;
-    const _state = document.querySelector("#state").value;
+    try {
+      const _licensor = document.querySelector("#licensor").value;
+      const _licensee = document.querySelector("#licensee").value;
+      const _patent_no = document.querySelector("#patent_no").value;
+      const _amount = document.querySelector("#amount").value;
+      const _state = document.querySelector("#state").value;
 
-    const transaction = await state.patent_contract.setAgreement(
-      _licensor,
-      _licensee,
-      _patent_no,
-      ethers.utils.parseUnits(_amount, 18),
-      _state
-    );
-    await transaction.wait();
-    setLicensor(_licensor);
-    setLicensee(_licensee);
-    setAmount(_amount);
-    // console.log(amount);
+      const transaction = await state.patent_contract.setAgreement(
+        _licensor,
+        _licensee,
+        _patent_no,
+        ethers.utils.parseUnits(_amount, 18),
+        _state
+      );
+      await transaction.wait();
+      setLicensor(_licensor);
+      setLicensee(_licensee);
+      setAmount(_amount);
+      // console.log(amount);
+    } catch (error) {
+      alert(error.error.message);
+    }
   };
 
   const signLicensor = async (e) => {
     e.preventDefault();
-    const lr_aadr = document.querySelector("#lr_aadhar").value;
-    const lr_name = document.querySelector("#lr_name").value;
-    const lr_addr = document.querySelector("#lr_addr").value;
-    const transact = await state.patent_contract.signLicensor(
-      id,
-      lr_aadr,
-      lr_name,
-      lr_addr
-    );
-    await transact.wait();
-    isSigned();
+    try {
+      const lr_aadr = document.querySelector("#lr_aadhar").value;
+      const lr_name = document.querySelector("#lr_name").value;
+      const lr_addr = document.querySelector("#lr_addr").value;
+      const transact = await state.patent_contract.signLicensor(
+        id,
+        lr_aadr,
+        lr_name,
+        lr_addr
+      );
+      await transact.wait();
+
+      const licensor = await state.patent_contract.licensor_info(id);
+      if (licensor.signed === true) {
+        setLicensorSign(licensor.signed);
+      }
+
+      isSigned();
+    } catch (error) {
+      alert(error.error.message);
+    }
   };
 
   const signLicensee = async (e) => {
     e.preventDefault();
-    const le_aadr = document.querySelector("#le_aadhar").value;
-    const le_name = document.querySelector("#le_name").value;
-    const le_addr = document.querySelector("#le_address").value;
-    const value = { value: ethers.utils.parseEther(`${amount}`) };
-    const transact = await state.patent_contract.signLicensee(
-      id,
-      le_aadr,
-      le_name,
-      le_addr,
-      value
-    );
-    await transact.wait();
-    isSigned();
+    try {
+      const le_aadr = document.querySelector("#le_aadhar").value;
+      const le_name = document.querySelector("#le_name").value;
+      const le_addr = document.querySelector("#le_address").value;
+      const value = { value: ethers.utils.parseEther(`${amount}`) };
+      const transact = await state.patent_contract.signLicensee(
+        id,
+        le_aadr,
+        le_name,
+        le_addr,
+        value
+      );
+      await transact.wait();
+
+      const licensee = await state.patent_contract.licensee_info(id);
+      if (licensee.signed === true) {
+        setLicenseeSign(licensee.signed);
+      }
+      isSigned();
+    } catch (error) {
+      alert(error.error.message);
+    }
   };
 
   //Problem in isSigned **********
@@ -120,43 +145,59 @@ const Patent = ({ state, id }) => {
               <div className="patent-data">
                 <div className="sps">
                   Licensor Information
-                  <form onSubmit={signLicensor} className="form">
-                    <label htmlFor="aadhar" className="label">
-                      Enter Licensor Aadhar_No:
-                    </label>
-                    <input type="number" className="inputs" id="lr_aadhar" />
-                    <label htmlFor="name" className="label">
-                      Enter Licensor Name:
-                    </label>
-                    <input type="text" className="inputs" id="lr_name" />
-                    <label htmlFor="address" className="label">
-                      Enter Licensor Address:
-                    </label>
-                    <input type="text" className="inputs" id="lr_addr" />
-                    <button type="submit" className="btn">
-                      Submit
-                    </button>
-                  </form>
+                  {!licensorSign === true ? (
+                    <form onSubmit={signLicensor} className="form">
+                      <label htmlFor="aadhar" className="label">
+                        Enter Licensor Aadhar_No:
+                      </label>
+                      <input type="number" className="inputs" id="lr_aadhar" />
+                      <label htmlFor="name" className="label">
+                        Enter Licensor Name:
+                      </label>
+                      <input type="text" className="inputs" id="lr_name" />
+                      <label htmlFor="address" className="label">
+                        Enter Licensor Address:
+                      </label>
+                      <input type="text" className="inputs" id="lr_addr" />
+                      <button type="submit" className="btn">
+                        Submit
+                      </button>
+                    </form>
+                  ) : (
+                    <div>
+                      <span className="txt">
+                        Licensor has signed the contract!
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <div className="sps">
                   Licensee Information
-                  <form onSubmit={signLicensee} className="form">
-                    <label htmlFor="aadhar" className="label">
-                      Enter Licensee Aadhar_No:
-                    </label>
-                    <input type="number" className="inputs" id="le_aadhar" />
-                    <label htmlFor="name" className="label">
-                      Enter Licensee Name:
-                    </label>
-                    <input type="text" className="inputs" id="le_name" />
-                    <label htmlFor="address" className="label">
-                      Enter Licensee Address:
-                    </label>
-                    <input type="text" className="inputs" id="le_address" />
-                    <button type="submit" className="btn">
-                      Submit
-                    </button>
-                  </form>
+                  {!licenseeSign === true ? (
+                    <form onSubmit={signLicensee} className="form">
+                      <label htmlFor="aadhar" className="label">
+                        Enter Licensee Aadhar_No:
+                      </label>
+                      <input type="number" className="inputs" id="le_aadhar" />
+                      <label htmlFor="name" className="label">
+                        Enter Licensee Name:
+                      </label>
+                      <input type="text" className="inputs" id="le_name" />
+                      <label htmlFor="address" className="label">
+                        Enter Licensee Address:
+                      </label>
+                      <input type="text" className="inputs" id="le_address" />
+                      <button type="submit" className="btn">
+                        Submit
+                      </button>
+                    </form>
+                  ) : (
+                    <div>
+                      <span className="txt">
+                        Licensee has signed the contract!
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
             </>

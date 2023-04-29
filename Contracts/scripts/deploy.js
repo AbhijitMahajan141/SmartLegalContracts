@@ -5,9 +5,9 @@ async function main() {
   // addr1 = "0x35D5AcD394FFF9D5266C90447E9F2aC51d42CB10";
   // addr2 = "0xA76199ac02B1c5BFF9B7ce1B83abE4fEF05446Fd";
   // Marriage deploy
-  const marriage = await hre.ethers.getContractFactory("Marriage");
-  const marr = await marriage.deploy();
-  await marr.deployed();
+  // const marriage = await hre.ethers.getContractFactory("Marriage");
+  // const marr = await marriage.deploy();
+  // await marr.deployed();
   //Marriage test
   // await marr.setSpouse(addr1, addr2).then((x) => {
   //   console.log(x.logs);
@@ -84,10 +84,15 @@ async function main() {
   // await pt.signed().then((val) => {
   //   console.log("Both signed:", val);
   // });
+  // Patent deploy
+  const newpatent = await hre.ethers.getContractFactory("NewPatent");
+  const npt = await newpatent.deploy();
+  await npt.deployed();
 
-  console.log("Address of Marriage contract:", marr.address);
+  // console.log("Address of Marriage contract:", marr.address);
   console.log("Address of ShopRental Contract:", sr.address);
   console.log("Address of patent Contract:", pt.address);
+  console.log("Address of New patent contract:", npt.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

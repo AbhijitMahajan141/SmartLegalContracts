@@ -4,10 +4,10 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        background-color: #243b67;
+        background-color: #0F2557;
         padding: 10px;
         /* width: 80%; */
-        border-radius: 10px;
+        border-radius: 17px;
         margin: 5px;
         /* max-height: 300px; */
 }
@@ -39,7 +39,9 @@
     background-color: #0ef6ccad;
     color: aliceblue;
     cursor: pointer;
-    box-shadow: 1px 2px 8px 2px rgb(78, 78, 78);
+}
+.btn:hover{
+    box-shadow: 0 1px 10px 1px rgba(33, 150, 243, .4);
 }
 
 .txt {

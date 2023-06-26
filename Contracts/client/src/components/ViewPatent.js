@@ -8,6 +8,9 @@ import "react-toastify/dist/ReactToastify.css";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import ViewNewPatent from "./ViewNewPatent";
 
 const ViewPatent = ({ state, currentAccount }) => {
   const [contractId, setContractId] = useState();
@@ -25,6 +28,8 @@ const ViewPatent = ({ state, currentAccount }) => {
   const [licenseeAddress, setLicenseeAddress] = useState("");
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+
+  const [viewwhichContract, setViewWhichContract] = useState("NewPatent");
 
   const handleClose = () => {
     setOpen(false);
@@ -131,15 +136,46 @@ const ViewPatent = ({ state, currentAccount }) => {
       <h1 style={{ color: "whitesmoke" }}>Your Patent Contract</h1>
       {!contractId && !licensorName && !licenseeName ? (
         <div>
-          <form className="form" onSubmit={getContract}>
-            <label htmlFor="index" className="label">
-              Enter Your Contract Token:
-            </label>
-            <input type="number" step="any" className="inputz" id="token" />
-            <button type="submit" className="btn" disabled={loading}>
-              {loading ? <CircularProgress size={25} /> : "Submit"}
-            </button>
-          </form>
+          <ToggleButtonGroup
+            color="info"
+            sx={{
+              backgroundColor: "#0F2557",
+            }}
+            value={viewwhichContract}
+            exclusive
+            onChange={(e, w) => {
+              e.preventDefault();
+              if (w !== null) {
+                setViewWhichContract(w);
+              }
+            }}
+            aria-label="Platform"
+          >
+            <ToggleButton value="NewPatent">
+              View New Patent Application
+            </ToggleButton>
+            <ToggleButton value="Patent">
+              View Patent Ownership Contract
+            </ToggleButton>
+          </ToggleButtonGroup>
+          {viewwhichContract === "Patent" && (
+            <div style={{ margin: "10px" }}>
+              <form className="form" onSubmit={getContract}>
+                <label htmlFor="index" className="label">
+                  Enter Your Contract Token:
+                </label>
+                <input type="number" step="any" className="inputz" id="token" />
+                <button type="submit" className="btn" disabled={loading}>
+                  {loading ? <CircularProgress size={25} /> : "Submit"}
+                </button>
+              </form>
+            </div>
+          )}
+          {viewwhichContract === "NewPatent" && (
+            <div>
+              <ViewNewPatent state={state} currentAccount={currentAccount} />
+            </div>
+          )}
         </div>
       ) : (
         <>

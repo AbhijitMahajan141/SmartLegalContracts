@@ -1,6 +1,8 @@
 import shopRental_abi from "./abi/ShopRental.json";
 import patent_abi from "./abi/PatentOwnershipTransfer.json";
 import newPatent_abi from "./abi/NewPatent.json";
+import trademark_abi from "./abi/TrademarkApplication.json";
+import tenders_abi from "./abi/Tenders.json";
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import "./App.css";
@@ -10,6 +12,7 @@ import ViewPatent from "./components/ViewPatent";
 import ViewShopRental from "./components/ViewShopRental";
 import Admin from "./components/Admin/Admin";
 import Storage from "./components/Storage";
+import Trademark from "./components/Trademark";
 import { connect } from "./components/ipfs";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -17,6 +20,15 @@ import { IoIosArrowDroprightCircle } from "react-icons/io";
 import homeback from "./homebackground.png";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import {
+  ViewNewPatentGuidelines,
+  ViewShopRentalGuidelines,
+  ViewTrademarkGuidelines,
+} from "./components/Guidelines";
+import ViewTrademark from "./components/ViewTrademark";
+import AllTenders from "./components/AllTenders";
+
+// import ViewNewPatent from "./components/ViewNewPatent";
 
 function App() {
   const [isMetamaskInstalled, setIsMetamaskInstalled] = useState(false);
@@ -24,6 +36,8 @@ function App() {
   const [patentId, setPatentId] = useState(0);
   const [shopRentalId, setShopRentalId] = useState(0);
   const [newPatentId, setNewPatentId] = useState(0);
+  const [trademarkId, setTrademarkId] = useState(0);
+  // const [pancardId, setPancardId] = useState(0);
   // const [active, setActive] = useState("Create");
   const [whichContract, setWhichContract] = useState("Patent");
   const [viewwhichContract, setViewWhichContract] = useState("Patent");
@@ -35,6 +49,10 @@ function App() {
     signer: null,
     shopRental_contract: null,
     patent_contract: null,
+    new_patent_contract: null,
+    trademark_contract: null,
+    tenders_contract: null,
+    // pancard_contract: null,
   });
   // const [provider, setProvider] = useState();
   // const [signer, setSigner] = useState();
@@ -50,14 +68,26 @@ function App() {
   useEffect(() => {
     const connectWallet = async () => {
       const shopRental_contract_address =
-        "0x562d73a8AAc246Ad71963dE000A1CeA3Bd611bC7";
+        "0x78E40EC3D11206b2446173DA1cBECd4a0cD934AB";
       const sr_abi = shopRental_abi.abi;
+
       const patent_contract_address =
-        "0x5Fcc682BB64F51e44314A701877d506Cf4B4aF12";
+        "0x9C86B1c26b559F38250F296a38FD6B42d73D05a8";
       const p_abi = patent_abi.abi;
+
       const newpatent_contract_address =
-        "0x0B52694515cae0e0C1E7b7864d9Aee6016BcaDb0";
+        "0xA21d0F49cFDaaFDD9C75093C93d2210D086bb732";
+      // "0x9Aa900FEc76F1aD7d95Da4138e98d18A49dB1006";
       const np_abi = newPatent_abi.abi;
+
+      const trademark_contract_address =
+        "0x9987F6fDC61638CCD9654971494C4F468E0800DB";
+      // "0x7a1Cd69b94bc2A3c0d44D4DeBEEd4Bf352657616";
+      const tm_abi = trademark_abi.abi;
+
+      const tenders_contract_address =
+        "0xa0837CF477e24A56E9E0aAB97dB9948E737e11b0";
+      const tender_abi = tenders_abi.abi;
 
       try {
         const { ethereum } = window;
@@ -66,7 +96,7 @@ function App() {
             method: "eth_requestAccounts",
           });
           setAccount(account[0]);
-          console.log(account);
+          // console.log(account);
         }
         const provider = new ethers.providers.Web3Provider(ethereum);
         //setProvider(pro);
@@ -103,12 +133,35 @@ function App() {
           setNewPatentId(ethers.BigNumber.from(id).toNumber());
         });
 
+        const trademark_contract = new ethers.Contract(
+          trademark_contract_address,
+          tm_abi,
+          signer
+        );
+        trademark_contract.on("tkn", (id) => {
+          console.log(ethers.BigNumber.from(id).toNumber());
+          setTrademarkId(ethers.BigNumber.from(id).toNumber());
+        });
+
+        const tenders_contract = new ethers.Contract(
+          tenders_contract_address,
+          tender_abi,
+          signer
+        );
+        // tenders_contract.on("ApplicationSubmitted", (id) => {
+        //   console.log(ethers.BigNumber.from(id).toNumber());
+        //   setPancardId(ethers.BigNumber.from(id).toNumber());
+        // });
+
         setState({
           provider,
           signer,
           shopRental_contract,
           patent_contract,
           new_patent_contract,
+          trademark_contract,
+          tenders_contract,
+          // pancard_contract,
         });
       } catch (error) {
         alert(error.message);
@@ -120,17 +173,18 @@ function App() {
   // console.log(account);
 
   return (
-    <div className="App">
+    <>
       {isMetamaskInstalled ? (
-        account === "0x7420acb34b61cc9df2ef02da6728073a89199133" ? (
+        account === "0x06c57cbaa47a9bc856a061322eea9109b441c7d6" ? (
           <>
             <div className="Admin">
-              <Admin />
+              <ToastContainer />
+              <Admin state={state} currentAccount={account} />
             </div>
           </>
         ) : // <div className="cont">
         account && account !== "0x7420acb34b61cc9df2ef02da6728073a89199133" ? (
-          <>
+          <div className="App">
             <div className="menu">
               <div style={{ width: "1%", cursor: "pointer" }}>
                 <span>
@@ -151,6 +205,9 @@ function App() {
                 </a>
                 <a className="menu-btn" href="#storage">
                   Store
+                </a>
+                <a className="menu-btn" href="#tenders">
+                  Tenders
                 </a>
               </div>
               <div>
@@ -202,7 +259,11 @@ function App() {
 
             {/* Create contract */}
             <div className="create" id="create">
-              <h1 style={{ color: "#8DD8E8" }}>Create New Contract</h1>
+              <span
+                style={{ color: "#8DD8E8", fontSize: "2em", margin: ".5rem" }}
+              >
+                Create New Contract
+              </span>
               <div>
                 <ToggleButtonGroup
                   color="info"
@@ -219,79 +280,51 @@ function App() {
                   }}
                   aria-label="Platform"
                 >
-                  <ToggleButton value="Patent">Patent</ToggleButton>
-                  <ToggleButton value="ShopRental">ShopRental</ToggleButton>
-                  {/* <ToggleButton value="ios">iOS</ToggleButton> */}
+                  <ToggleButton value="Patent">Patent Contracts</ToggleButton>
+                  <ToggleButton value="ShopRental">
+                    ShopRental Contract
+                  </ToggleButton>
+                  <ToggleButton value="Trademark">
+                    Trademark Contract
+                  </ToggleButton>
+                  {/* <ToggleButton value="Pancard">Pancard Contract</ToggleButton> */}
                 </ToggleButtonGroup>
               </div>
-              <div className="create-sec">
-                <div
-                  style={{
-                    width: "50%",
-                    maxWidth: "50%",
-                    marginLeft: "50px",
-                    marginTop: "10px",
-                    backgroundColor: "#0F2557",
-                    padding: "20px",
-                    borderRadius: "17px",
-                  }}
-                >
-                  <span style={{ color: "#8DD8E8" }}>Guidelines:</span>
 
-                  <ul style={{ color: "#8DD8E8" }}>
-                    <li>
-                      Firstly please check if you are connected to your metamask
-                      account.
-                    </li>
-                    <li>
-                      Fill all the information in the initial screen i.e. the
-                      metamask public Id of people involved, the patent number,
-                      amount and state.
-                    </li>
-                    <li>
-                      Submit the form and confirm the transaction from the
-                      Licensors metamask.
-                    </li>
-                    <li>
-                      The next screen will need some more information of the
-                      people involved in the contract like their Name, Aadhar
-                      Id, Address, etc.
-                    </li>
-                    <li>
-                      Please Submit the personal data filled with your
-                      particular metamask account and confirm the transaction
-                      from the same metamask account.
-                    </li>
-                    <li>
-                      Once all people involved have signed the contract the
-                      contract will go for Verification, Once Verification is
-                      done You can view your contract details in View Contract.
-                    </li>
-                  </ul>
-                </div>
-                <div className="create-contracts">
-                  {whichContract === "Patent" && (
-                    <div>
-                      <ToastContainer />
-                      <Patent
-                        state={state}
-                        id={patentId}
-                        newId={newPatentId}
-                        // currentAccount={account}
-                      />
-                    </div>
-                  )}
-                  {whichContract === "ShopRental" && (
-                    <div>
-                      <ToastContainer />
-                      <ShopRental
-                        state={state}
-                        id={shopRentalId}
-                        // currentAccount={account}
-                      />
-                    </div>
-                  )}
-                </div>
+              <div className="create-contracts">
+                {whichContract === "Patent" && (
+                  <div>
+                    <ToastContainer />
+                    <Patent
+                      state={state}
+                      id={patentId}
+                      newId={newPatentId}
+                      // currentAccount={account}
+                    />
+                  </div>
+                )}
+                {whichContract === "ShopRental" && (
+                  <div>
+                    <ToastContainer />
+                    <ShopRental
+                      state={state}
+                      id={shopRentalId}
+                      // currentAccount={account}
+                    />
+                  </div>
+                )}
+                {whichContract === "Trademark" && (
+                  <div>
+                    <ToastContainer />
+                    <Trademark state={state} id={trademarkId} />
+                  </div>
+                )}
+                {/* {whichContract === "Pancard" && (
+                  <div>
+                    <ToastContainer />
+                    <Pancard state={state} id={pancardId} />
+                  </div>
+                )} */}
               </div>
             </div>
 
@@ -316,65 +349,35 @@ function App() {
                 >
                   <ToggleButton value="Patent">Patent</ToggleButton>
                   <ToggleButton value="ShopRental">ShopRental</ToggleButton>
-                  {/* <ToggleButton value="ios">iOS</ToggleButton> */}
+                  <ToggleButton value="Trademark">TradeMark</ToggleButton>
                 </ToggleButtonGroup>
               </div>
               <div className="view-sec">
-                <div
-                  style={{
-                    width: "90%",
-                    // maxWidth: "50%",
-                    // marginLeft: "50px",
-                    // marginTop: "10px",
-                    backgroundColor: "#0F2557",
-                    padding: "20px",
-                    borderRadius: "17px",
-                  }}
-                >
-                  <span style={{ color: "#8DD8E8" }}>Guidelines:</span>
-
-                  <ul style={{ color: "#8DD8E8" }}>
-                    <li>
-                      Firstly please check if you are connected to your metamask
-                      account.
-                    </li>
-                    <li>
-                      Fill all the information in the initial screen i.e. the
-                      metamask public Id of people involved, the patent number,
-                      amount and state.
-                    </li>
-                    <li>
-                      Submit the form and confirm the transaction from the
-                      Licensors metamask.
-                    </li>
-                    <li>
-                      The next screen will need some more information of the
-                      people involved in the contract like their Name, Aadhar
-                      Id, Address, etc.
-                    </li>
-                    <li>
-                      Please Submit the personal data filled with your
-                      particular metamask account and confirm the transaction
-                      from the same metamask account.
-                    </li>
-                    <li>
-                      Once all people involved have signed the contract the
-                      contract will go for Verification, Once Verification is
-                      done You can view your contract details in View Contract.
-                    </li>
-                  </ul>
-                </div>
+                {viewwhichContract === "ShopRental" && (
+                  <ViewShopRentalGuidelines />
+                )}
+                {viewwhichContract === "Patent" && <ViewNewPatentGuidelines />}
+                {viewwhichContract === "Trademark" && (
+                  <ViewTrademarkGuidelines />
+                )}
                 <div className="contracts">
                   {viewwhichContract === "Patent" && (
                     <div>
                       <ToastContainer />
                       <ViewPatent state={state} currentAccount={account} />
+                      {/* <ViewNewPatent /> */}
                     </div>
                   )}
                   {viewwhichContract === "ShopRental" && (
                     <div>
                       <ToastContainer />
                       <ViewShopRental state={state} currentAccount={account} />
+                    </div>
+                  )}
+                  {viewwhichContract === "Trademark" && (
+                    <div>
+                      <ToastContainer />
+                      <ViewTrademark state={state} currentAccount={account} />
                     </div>
                   )}
                 </div>
@@ -387,14 +390,20 @@ function App() {
               <Storage account={account} />
             </div>
 
+            {/* Tenders Section */}
+            <div className="tenders" id="tenders">
+              <ToastContainer />
+              <AllTenders state={state} currentAccount={account} />
+            </div>
+
             {/* About */}
             <div className="about" id="about">
               <h1>The About Section of the Application goes here!!!</h1>
             </div>
-          </>
+          </div>
         ) : (
           <div className="connect-cont">
-            <span style={{ color: "black", textAlign: "center" }}>
+            <span style={{ color: "#8DD8E8", textAlign: "center" }}>
               <h1>SML SmartLegalContracts</h1>
               <h2>Making Legal Contracts Smart using Blockchain!!!</h2>
               <h3>Please connect your wallet.</h3>
@@ -409,12 +418,12 @@ function App() {
       )}
 
       {/* {account ? <></> : ""} */}
-    </div>
+    </>
   );
 }
 
 export default App;
 
 // const marriage_contract_address = "0x4acc78Ed2459107c69Fb4006B9625943D35805Cf";
-// const patent_contract_address = "0x0BD4F34e8A6A792154617eF389627E550CE26F2f";
-// const shopRental_contract_address ="0x6290d22A195Da1832e8bd210b6512b9c1d4146af";
+// const patent_contract_address = "0x5Fcc682BB64F51e44314A701877d506Cf4B4aF12";
+// const shopRental_contract_address ="0x562d73a8AAc246Ad71963dE000A1CeA3Bd611bC7";

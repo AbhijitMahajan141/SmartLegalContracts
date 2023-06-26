@@ -89,7 +89,7 @@ html,body{
   align-items: center;
 }
 .contracts{
-  width: 80%;
+  width: 100%;
   /* max-width: 50%; */
   /* display: flex; */
   /* flex-direction: column; */
@@ -98,19 +98,19 @@ html,body{
   /* margin-top: 5rem; */
   /* margin-right: 50px; */
   /* height: 40vh; */
-  max-height: 35vh;
-  overflow: auto;
+  /* max-height: 35vh; */
+  /* overflow: auto; */
 
 }
 
 .create-contracts{
   width: 50%;
-  /* max-width: 50%; */
-  /* margin-top: 5rem; */
-  margin-right: 50px;
-  /* overflow: auto; */
-  max-height: 35vh;
-  /* overflow: auto; */
+  max-width: 50%;
+  height: 60%;
+  max-height: 60%;
+  overflow: auto;
+  margin-top: .5rem;
+  /* margin-bottom: 5rem; */
 }
 
 .contract-btn{
@@ -167,19 +167,13 @@ html,body{
   align-items: center;
   height: 100vh;
   width: 100%;
-  
-  /* background-color: #a9d2ff; */
-  /* border-radius: 5px; */
 }
-.create-sec{
+/* .create-sec{
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  margin-top: .5rem;
-  margin-bottom: 10rem;
-  /* height: 55%; */
-}
+} */
 
 .view{
   display: flex;
@@ -196,12 +190,22 @@ html,body{
   justify-content: space-between;
   align-items: center;
   margin-top: 1rem;
+  /* width: 100%; */
   /* margin-bottom: 12rem; */
   /* height: 55%; */
   
 }
 
 .storage{
+  display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+}
+
+.tenders{
   display: flex;
     flex-direction: column;
     justify-content: center;

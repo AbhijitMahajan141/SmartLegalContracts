@@ -1,0 +1,53 @@
+.trademark-container {
+    /* width: 100%; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #0F2557;
+    padding: 10px;
+    /* width: 80%; */
+    border-radius: 17px;
+    margin: 5px;
+    /* max-height: 300px; */
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.label {
+    padding: 5px;
+    color: beige;
+}
+
+.inputs {
+    background-color: aliceblue;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    padding: 5px;
+}
+
+.btn {
+    margin-top: 10px;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #0ef6ccad;
+    color: aliceblue;
+    cursor: pointer;
+}
+
+.btn:hover {
+    box-shadow: 0 1px 10px 1px rgba(33, 150, 243, .4);
+}
+
+.txt {
+    color: rgb(244, 5, 5);
+    text-align: center;
+    margin: 5px;
+}

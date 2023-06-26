@@ -6,10 +6,8 @@ import "react-toastify/dist/ReactToastify.css";
 import CircularProgress from "@mui/material/CircularProgress";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
+import NewPatent from "./NewPatent";
+import { PatentOwnershipGuidelines } from "./Guidelines";
 
 const Patent = ({ state, id, newId }) => {
   const [licensor, setLicensor] = useState();
@@ -22,23 +20,6 @@ const Patent = ({ state, id, newId }) => {
 
   const [select, setSelect] = useState("New");
 
-  const [aSigned, setASigned] = useState(false);
-  const [applicant, setApplicant] = useState();
-  const [type, setType] = useState("");
-
-  const handleType = (event) => {
-    setType(event.target.value);
-  };
-
-  const [ptype, setPType] = useState("");
-
-  const handlePType = (event) => {
-    setPType(event.target.value);
-  };
-  const [patentType, setpatentType] = useState();
-  const [inventionTitle, setinventionTitle] = useState();
-  // const [inventionType, setinventionType] = useState();
-  const [inventionDescription, setinventionDescription] = useState();
   // const [pamt, setPamt] = useState();
 
   const setParam = async (e) => {
@@ -70,46 +51,10 @@ const Patent = ({ state, id, newId }) => {
       });
     } catch (error) {
       setLoading(false);
-      toast.error("Something went wrong:" + error.error.message, {
+      toast.error("Something went wrong:" + error.message, {
         position: toast.POSITION.BOTTOM_CENTER,
       });
       // alert(error.error.message);
-    }
-  };
-
-  const newApplication = async (e) => {
-    e.preventDefault();
-    try {
-      setLoading(true);
-      const _applicant = document.querySelector("#applicantAddress").value;
-      const _applicantType = type; //document.querySelector("#applicantType").value;
-      const _applicantAadhar = document.querySelector("#applicantAadhar").value;
-      const _applicantName = document.querySelector("#applicantName").value;
-      const _applicantAddr = document.querySelector("#applicantAddress").value;
-
-      const transaction = await state.new_patent_contract.setAgreement(
-        _applicant,
-        _applicantType,
-        _applicantAadhar,
-        _applicantName,
-        _applicantAddr
-      );
-      await transaction.wait();
-      setApplicant(_applicant);
-      // setApplicantType();
-      // setApplicantAadhar();
-      // setApplicantName();
-      // setApplicantAddr();
-
-      setLoading(false);
-      toast.success("Contract Initiated!!!", {
-        position: toast.POSITION.BOTTOM_CENTER,
-      });
-    } catch (error) {
-      setLoading(false);
-      toast.error("Something went wrong:" + error.error.message, {
-        position: toast.POSITION.BOTTOM_CENTER,
-      });
     }
   };
 
@@ -186,62 +131,6 @@ const Patent = ({ state, id, newId }) => {
     }
   };
 
-  const signPatent = async (e) => {
-    e.preventDefault();
-    try {
-      setLoading(true);
-
-      // console.log(applicant);
-      // console.log(document.querySelector("#applicantAddress2").value);
-      const _appli = applicant; //document.querySelector("#applicantAddress2").value;
-
-      const _pTitle = document.querySelector("#patentTitle").value;
-
-      const _pType = ptype; //document.querySelector("#patentType").value;
-
-      const _pDesc = document.querySelector("#patentDesc").value;
-      // console.log(document.querySelector("#pamt").value);
-      const price = document.querySelector("#pamt").value;
-      const val = {
-        value: ethers.utils.parseEther("0.001"),
-      };
-
-      const transact = await state.new_patent_contract.patentData(
-        newId,
-        _appli,
-        _pTitle,
-        _pType,
-        _pDesc,
-        { value: ethers.utils.parseEther("0.001") }
-      );
-      await transact.wait();
-
-      const patentDat = await state.new_patent_contract.patent_info(newId);
-      if (
-        patentDat.applicant &&
-        patentDat.inventionTitle &&
-        patentDat.inventionType &&
-        patentDat.inventionDescription
-      ) {
-        setpatentType(patentDat.inventionType);
-        setinventionTitle(patentDat.inventionTitle);
-        setinventionDescription(patentDat.inventionDescription);
-      }
-
-      setLoading(false);
-      toast.success("Patent Information Saved!!!", {
-        position: toast.POSITION.BOTTOM_CENTER,
-      });
-    } catch (error) {
-      setLoading(false);
-      toast.error("Something went wrong:" + error.message, {
-        position: toast.POSITION.BOTTOM_CENTER,
-      });
-    }
-  };
-
-  // const newPatent = async (e) => {};
-
   //Problem in isSigned **********
   const isSigned = async () => {
     const sign = await state.patent_contract.getSigned(id);
@@ -250,16 +139,9 @@ const Patent = ({ state, id, newId }) => {
   };
   // ***************
 
-  const newSigned = async () => {
-    const newSign = await state.new_patent_contract.getSigned(newId);
-    setASigned(newSign);
-  };
-
   useEffect(() => {
     //uncaught error due to this...........
     isSigned();
-    newSigned();
-    // console.log(signed, divorced);
   });
 
   return (
@@ -283,191 +165,45 @@ const Patent = ({ state, id, newId }) => {
         <ToggleButton value="Transfer">Patent Ownership transfer</ToggleButton>
         {/* <ToggleButton value="ios">iOS</ToggleButton> */}
       </ToggleButtonGroup>
-      {select === "New" &&
-        (!aSigned ? (
-          <>
-            <h2 style={{ color: "#8DD8E8" }}>Patent Application</h2>
-            <span style={{ color: "#8DD8E8" }}>
-              The Applicant must enter their details here.
-            </span>
-            <form onSubmit={newApplication} className="form">
-              <label htmlFor="applicantAddress" className="label">
-                Applicant's metamask Address:
-              </label>
-              <input
-                type="text"
-                className="inputs"
-                id="applicantAddress"
-                required
-              />
-              <FormControl
-                sx={{
-                  m: 1,
-                  minWidth: 200,
-                  backgroundColor: "white",
-                  borderRadius: "9px",
-                }}
-              >
-                <InputLabel id="applicantType">Applicant Type</InputLabel>
-                <Select
-                  labelId="applicantType"
-                  id="applicantType"
-                  value={type}
-                  onChange={handleType}
-                  autoWidth
-                  label="type"
-                >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  <MenuItem value="NaturalPerson">Natural Person</MenuItem>
-                  <MenuItem value="Organization">Organization</MenuItem>
-                  <MenuItem value="SmallEntity">Small Entity</MenuItem>
-                </Select>
-              </FormControl>
-
-              {/* <label htmlFor="applicantType" className="label">
-                Patent Type:
-              </label>
-              <input
-                type="text"
-                className="inputs"
-                id="applicantType"
-                required
-              /> */}
-
-              <label htmlFor="applicantAadhar" className="label">
-                Applicant's Aadhar No.:
-              </label>
-              <input
-                type="number"
-                className="inputs"
-                id="applicantAadhar"
-                required
-              />
-              <label htmlFor="applicantName" className="label">
-                Applicant's Full Name:
-              </label>
-              <input
-                type="text"
-                className="inputs"
-                id="applicantName"
-                required
-              />
-              <label htmlFor="applicantAddress" className="label">
-                Applicant's Full Address:
-              </label>
-              <input
-                type="text"
-                className="inputs"
-                id="applicantAddress"
-                required
-              />
-              <button type="submit" className="btn">
-                {loading ? <CircularProgress size={25} /> : "Submit"}
-              </button>
-            </form>
-          </>
-        ) : !patentType && !inventionTitle && !inventionDescription ? (
-          <>
-            <h2 style={{ color: "#8DD8E8" }}>Patent Application</h2>
-            <h4 style={{ color: "#8DD8E8" }}>Your Token is {newId}</h4>
-            <span style={{ color: "#8DD8E8" }}>
-              The Applicant must enter Patent details here.
-            </span>
-            <form onSubmit={signPatent} className="form">
-              <label htmlFor="applicantAddress2" className="label">
-                Applicant's metamask Address:
-              </label>
-              <input
-                type="text"
-                className="inputs"
-                id="applicantAddress"
-                value={applicant}
-                disabled
-                required
-              />
-              <label htmlFor="patentTitle" className="label">
-                Patent Title:
-              </label>
-              <input type="text" className="inputs" id="patentTitle" required />
-
-              <FormControl
-                sx={{
-                  m: 1,
-                  minWidth: 200,
-                  backgroundColor: "white",
-                  borderRadius: "9px",
-                }}
-              >
-                <InputLabel id="patentType">Patent Type</InputLabel>
-                <Select
-                  labelId="patentType"
-                  id="patentType"
-                  value={ptype}
-                  onChange={handlePType}
-                  autoWidth
-                  label="type"
-                >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  <MenuItem value="Utility">Utility Patent</MenuItem>
-                  <MenuItem value="Design">Design Patent</MenuItem>
-                  <MenuItem value="Plant">Plant Patent</MenuItem>
-                  <MenuItem value="Complete">Complete Patent</MenuItem>
-                </Select>
-              </FormControl>
-
-              {/* <label htmlFor="patentType" className="label">
-                Patent Type:
-              </label>
-              <input type="text" className="inputs" id="patentType" required /> */}
-              <label htmlFor="patentDesc" className="label">
-                Patent Description:
-              </label>
-              <input type="text" className="inputs" id="patentDesc" required />
-
-              <label htmlFor="pamt" className="label">
-                Fees:
-              </label>
-              <input
-                type="number"
-                className="inputs"
-                id="pamt"
-                step="any"
-                value={0.000001}
-                disabled
-                required
-              />
-
-              <button type="submit" className="btn">
-                {loading ? <CircularProgress size={25} /> : "Submit"}
-              </button>
-            </form>
-          </>
-        ) : (
-          <>
-            <h1>Your Application is under Scrutinity.</h1>
-          </>
-        ))}
+      {select === "New" && <NewPatent state={state} newId={newId} />}
       {select === "Transfer" && (
         <>
+          <PatentOwnershipGuidelines />
+
           <h2 style={{ color: "#8DD8E8" }}>Patent Ownership Transfer</h2>
           {!licensor && !licensee ? (
             <form onSubmit={setParam} className="form">
               <label htmlFor="licensor" className="label">
                 Licensor metamask Address:
               </label>
-              <input type="text" className="inputs" id="licensor" required />
+              <input
+                type="text"
+                className="inputs"
+                id="licensor"
+                placeholder="Eg.0x1562990CF848Eb5809D3D7026Ac6430c24f3bb87"
+                required
+                // maxLength={}
+              />
               <label htmlFor="licensee" className="label">
                 Licensee metamask Address:
               </label>
-              <input type="text" className="inputs" id="licensee" required />
+              <input
+                type="text"
+                className="inputs"
+                id="licensee"
+                placeholder="Eg.0x1562990CF848Eb5809D3D7026Ac6430c24f3bb87"
+                required
+              />
               <label htmlFor="patent_no" className="label">
                 Enter Patent No.:
               </label>
-              <input type="text" className="inputs" id="patent_no" required />
+              <input
+                type="text"
+                className="inputs"
+                id="patent_no"
+                placeholder="Eg.d12345"
+                required
+              />
               <label htmlFor="amount" className="label">
                 Enter Amount:
               </label>
@@ -476,12 +212,19 @@ const Patent = ({ state, id, newId }) => {
                 step="any"
                 className="inputs"
                 id="amount"
+                placeholder="Eg.0.000000000000030000"
                 required
               />
               <label htmlFor="state" className="label">
                 Enter State:
               </label>
-              <input type="text" className="inputs" id="state" required />
+              <input
+                type="text"
+                className="inputs"
+                id="state"
+                placeholder="Eg.Maharashtra"
+                required
+              />
               <button type="submit" className="btn">
                 {loading ? <CircularProgress size={25} /> : "Submit"}
               </button>
@@ -512,7 +255,10 @@ const Patent = ({ state, id, newId }) => {
                             type="number"
                             className="inputs"
                             id="lr_aadhar"
+                            placeholder="Eg.123456789012"
                             required
+                            minLength={12}
+                            maxLength={12}
                           />
                           <label htmlFor="name" className="label">
                             Enter Licensor Name:
@@ -521,15 +267,19 @@ const Patent = ({ state, id, newId }) => {
                             type="text"
                             className="inputs"
                             id="lr_name"
+                            placeholder="Eg.Vijay Dinanath Chauhan"
                             required
                           />
                           <label htmlFor="address" className="label">
                             Enter Licensor Address:
                           </label>
-                          <input
+                          <textarea
                             type="text"
                             className="inputs"
                             id="lr_addr"
+                            rows={4}
+                            cols={20}
+                            placeholder="Eg.flat no.d1,some colony, some nagar,some road,city,123456."
                             required
                           />
                           <button type="submit" className="btn">
@@ -561,7 +311,10 @@ const Patent = ({ state, id, newId }) => {
                             type="number"
                             className="inputs"
                             id="le_aadhar"
+                            placeholder="Eg.123456789012"
                             required
+                            maxLength={12}
+                            minLength={12}
                           />
                           <label htmlFor="name" className="label">
                             Enter Licensee Name:
@@ -570,15 +323,19 @@ const Patent = ({ state, id, newId }) => {
                             type="text"
                             className="inputs"
                             id="le_name"
+                            placeholder="Eg.Vijay Dinanath Chauhan"
                             required
                           />
                           <label htmlFor="address" className="label">
                             Enter Licensee Address:
                           </label>
-                          <input
+                          <textarea
                             type="text"
                             className="inputs"
                             id="le_address"
+                            rows={4}
+                            cols={20}
+                            placeholder="Eg.flat no.d1,some colony, some nagar,some road,city,123456."
                             required
                           />
                           <button type="submit" className="btn">

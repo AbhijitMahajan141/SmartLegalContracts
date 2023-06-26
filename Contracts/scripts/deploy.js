@@ -4,48 +4,6 @@ async function main() {
   // const [addr1, addr2] = await hre.ethers.getSigners();
   // addr1 = "0x35D5AcD394FFF9D5266C90447E9F2aC51d42CB10";
   // addr2 = "0xA76199ac02B1c5BFF9B7ce1B83abE4fEF05446Fd";
-  // Marriage deploy
-  // const marriage = await hre.ethers.getContractFactory("Marriage");
-  // const marr = await marriage.deploy();
-  // await marr.deployed();
-  //Marriage test
-  // await marr.setSpouse(addr1, addr2).then((x) => {
-  //   console.log(x.logs);
-  // });
-  // await marr.setSpouse(addr1, addr2).then((x) => {
-  //   console.log(x);
-  // });
-  // await marr.setSpouse(addr1, addr2).then((x) => {
-  //   console.log(x);
-  // });
-  // await marr.setSpouse(addr1, addr2).then((x) => {
-  //   console.log(x);
-  // });
-
-  // marr.husbandAddress().then((val) => {
-  //   console.log("Husband Address:", val);
-  // });
-  // marr.wifeAddress().then((val) => {
-  //   console.log("Wife Address:", val);
-  // });
-  // await marr.signContract(12345678, "Abhijit", "123", "asdad", "asdasdasd");
-
-  // await marr
-  //   .connect(addr2)
-  //   .signContract(12345678, "Abhijit", "123", "asdad", "asdasdasd");
-
-  // await marr.signed().then((val) => {
-  //   console.log("Both Signed:", val);
-  // });
-  // await marr.divorced().then((val) => {
-  //   console.log("Divorced", val);
-  // });
-
-  // await marr.divorce();
-  // await marr.connect(addr2).divorce();
-  // await marr.divorced().then((val) => {
-  //   console.log("Divorced", val);
-  // });
 
   //ShopRental deploy
   const shopRental = await hre.ethers.getContractFactory("ShopRental");
@@ -89,10 +47,19 @@ async function main() {
   const npt = await newpatent.deploy();
   await npt.deployed();
 
-  // console.log("Address of Marriage contract:", marr.address);
+  const trademark = await hre.ethers.getContractFactory("TrademarkApplication");
+  const tm = await trademark.deploy();
+  await tm.deployed();
+
+  const tender = await hre.ethers.getContractFactory("Tenders");
+  const tr = await tender.deploy();
+  await tr.deployed();
+
   console.log("Address of ShopRental Contract:", sr.address);
   console.log("Address of patent Contract:", pt.address);
   console.log("Address of New patent contract:", npt.address);
+  console.log("Address of Trademark Application:", tm.address);
+  console.log("Address of Tender Application:", tr.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

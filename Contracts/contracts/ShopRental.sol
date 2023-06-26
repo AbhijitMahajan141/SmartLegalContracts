@@ -14,6 +14,8 @@ contract ShopRental {
 
     uint256 no_of_agreement = 0;
 
+    uint256 public total_rental = 0;
+
     struct AgreementInfo {
         uint256 agreement_id;
         address payable landlord_address;
@@ -112,6 +114,7 @@ contract ShopRental {
             block.timestamp,
             State.Created
         );
+        total_rental++;
         emit token(no_of_agreement);
     }
 
@@ -143,6 +146,7 @@ contract ShopRental {
             lessee_info[_index].signed == true
         ) {
             agreement_info[_index].state = State.Started;
+            // total_rental++;
         }
     }
 
@@ -174,6 +178,7 @@ contract ShopRental {
             lessee_info[_index].signed == true
         ) {
             agreement_info[_index].state = State.Started;
+            // total_rental++;
         }
     }
 

@@ -4,6 +4,7 @@ import { ethers } from "ethers";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CircularProgress from "@mui/material/CircularProgress";
+import { ShopRentalGuidelines } from "./Guidelines";
 
 export const ShopRental = ({ state, id }) => {
   const [landlord, setLandlord] = useState();
@@ -141,16 +142,30 @@ export const ShopRental = ({ state, id }) => {
   return (
     <div className="ShopRental-container">
       <h2 style={{ color: "#8DD8E8" }}>ShopRental Contract</h2>
+      <ShopRentalGuidelines />
+
       {!landlord && !lessee ? (
         <form onSubmit={setAgreement} className="form">
           <label htmlFor="landlord" className="label">
-            Enter Landlord Address:
+            Enter Landlord metamask Address:
           </label>
-          <input type="text" className="inputs" id="landlord" required />
+          <input
+            type="text"
+            className="inputs"
+            id="landlord"
+            placeholder="Eg.0x1562990CF848Eb5809D3D7026Ac6430c24f3bb87"
+            required
+          />
           <label htmlFor="lessee" className="label">
-            Enter Lessee Address:
+            Enter Lessee metamask Address:
           </label>
-          <input type="text" className="inputs" id="lessee" required />
+          <input
+            type="text"
+            className="inputs"
+            id="lessee"
+            placeholder="Eg.0x1562990CF848Eb5809D3D7026Ac6430c24f3bb87"
+            required
+          />
           <label htmlFor="rent" className="label">
             Enter Rent:
           </label>
@@ -159,20 +174,41 @@ export const ShopRental = ({ state, id }) => {
             step="any"
             className="inputs"
             id="rent"
+            placeholder="Eg.0.000000000000030000"
             required
           />
           <label htmlFor="shopAddress" className="label">
             Enter Shop Address:
           </label>
-          <input type="text" className="inputs" id="shopAddress" required />
+          <textarea
+            type="text"
+            className="inputs"
+            id="shopAddress"
+            placeholder="Eg.shop no.d1,some colony, some nagar,some road,city,123456"
+            rows={4}
+            cols={20}
+            required
+          />
           <label htmlFor="term" className="label">
             Enter Term:
           </label>
-          <input type="number" className="inputs" id="term" required />
+          <input
+            type="number"
+            className="inputs"
+            id="term"
+            placeholder="Eg.11 (months)"
+            required
+          />
           <label htmlFor="rentduedate" className="label">
             Enter Rent Due Date:
           </label>
-          <input type="number" className="inputs" id="rentduedate" required />
+          <input
+            type="number"
+            className="inputs"
+            id="rentduedate"
+            placeholder="Eg.10 (of every month)"
+            required
+          />
           <button type="submit" className="btn">
             {loading ? <CircularProgress size={25} /> : "Submit"}
           </button>
@@ -201,7 +237,10 @@ export const ShopRental = ({ state, id }) => {
                         type="number"
                         className="inputs"
                         id="ld_aadhar"
+                        placeholder="Eg.123456789098"
                         required
+                        minLength={12}
+                        maxLength={12}
                       />
                       <label htmlFor="name" className="label">
                         Enter Landlord Name:
@@ -210,6 +249,7 @@ export const ShopRental = ({ state, id }) => {
                         type="text"
                         className="inputs"
                         id="ld_name"
+                        placeholder="Eg.Vijay Dinanath Chauhan"
                         required
                       />
                       <label htmlFor="fathers_name" className="label">
@@ -219,15 +259,19 @@ export const ShopRental = ({ state, id }) => {
                         type="text"
                         className="inputs"
                         id="ld_father"
+                        placeholder="Eg.Dinanath Chauhan"
                         required
                       />
                       <label htmlFor="address" className="label">
                         Enter Landlord Address:
                       </label>
-                      <input
+                      <textarea
                         type="text"
                         className="inputs"
                         id="ld_addr"
+                        placeholder="Eg.flat no.d1,some colony, some nagar,some road,city,123456"
+                        rows={4}
+                        cols={20}
                         required
                       />
                       <button type="submit" className="btn">
@@ -253,7 +297,10 @@ export const ShopRental = ({ state, id }) => {
                         type="number"
                         className="inputs"
                         id="le_aadhar"
+                        placeholder="Eg.123456789098"
                         required
+                        minLength={12}
+                        maxLength={12}
                       />
                       <label htmlFor="name" className="label">
                         Enter Lessee Name:
@@ -262,6 +309,7 @@ export const ShopRental = ({ state, id }) => {
                         type="text"
                         className="inputs"
                         id="le_name"
+                        placeholder="Eg.Vijay Dinanath Chauhan"
                         required
                       />
                       <label htmlFor="fathers_name" className="label">
@@ -271,15 +319,19 @@ export const ShopRental = ({ state, id }) => {
                         type="text"
                         className="inputs"
                         id="le_father"
+                        placeholder="Eg.Dinanath Chauhan"
                         required
                       />
                       <label htmlFor="address" className="label">
                         Enter Lessee Address:
                       </label>
-                      <input
+                      <textarea
                         type="text"
                         className="inputs"
                         id="le_address"
+                        placeholder="Eg.flat no.d1,some colony, some nagar,some road,city,123456"
+                        rows={4}
+                        cols={20}
                         required
                       />
                       <button type="submit" className="btn">

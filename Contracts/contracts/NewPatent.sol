@@ -15,13 +15,15 @@ contract NewPatent {
 
     uint no_of_patent = 0;
 
+    uint public total_patent = 0;
+
     struct PatentInfo {
         uint application_id;
         address payable applicant;
         string inventionTitle;
         string inventionType;
         string inventionDescription;
-        uint amount;
+        // uint amount;
         uint createdTimestamp;
         State se;
     }
@@ -72,8 +74,7 @@ contract NewPatent {
         address payable _applicant,
         string memory _inventionTitle,
         string memory _inventionType,
-        string memory _inventionDescription,
-        uint _amount
+        string memory _inventionDescription
     ) public {
         require(msg.sender != address(0));
         require(
@@ -87,11 +88,10 @@ contract NewPatent {
             _inventionTitle,
             _inventionType,
             _inventionDescription,
-            _amount,
             block.timestamp,
             State.Processing
         );
-
+        total_patent++;
         // if(applicant_info[_id].signed == true){
         // agreement_info[_index].se = State.Completed;
         // agreement_info[_index].licensor.transfer(agreement_info[_index].amount);
@@ -102,8 +102,20 @@ contract NewPatent {
         patent_info[_id].se = State.Approved;
     }
 
+    function reject(uint _id) public {
+        patent_info[_id].se = State.Discarded;
+    }
+
     function getApproved(uint256 _index) public view returns (bool) {
         if (patent_info[_index].se == State.Approved) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function getRejected(uint256 _index) public view returns (bool) {
+        if (patent_info[_index].se == State.Discarded) {
             return true;
         } else {
             return false;
